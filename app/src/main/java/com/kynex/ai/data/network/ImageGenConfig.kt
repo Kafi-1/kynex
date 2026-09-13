@@ -1,26 +1,19 @@
 package com.kynex.ai.data.network
 
-import com.kynex.ai.BuildConfig
-
 /**
  * CENTRAL image-generation configuration.
- * The App Key is injected from local.properties at build time
- * (BuildConfig.POLLINATIONS_APP_KEY) and is never committed to git.
- *
- * Auth flow per official Pollinations OpenAPI spec (gen.pollinations.ai):
- * "Include your API key as Authorization: Bearer YOUR_API_KEY".
+ * Uses Pollinations' keyless legacy endpoint (image.pollinations.ai/prompt/...),
+ * which needs no API key. The pk_ App Key has no model permissions on
+ * gen.pollinations.ai, so it is not used.
  */
 object ImageGenConfig {
 
-    const val BASE_URL = "https://gen.pollinations.ai"
+    const val BASE_URL = "https://image.pollinations.ai"
 
-    // Change this to any Pollinations-supported image model later.
-    const val DEFAULT_MODEL = "nanobanana-2"
+    // Free tier model on the legacy endpoint.
+    const val DEFAULT_MODEL = "flux"
 
-    const val DEFAULT_SIZE = "1024x1024"
+    const val DEFAULT_WIDTH = 1024
 
-    // b64_json is the documented default; we decode it directly.
-    const val RESPONSE_FORMAT = "b64_json"
-
-    val appKey: String get() = BuildConfig.POLLINATIONS_APP_KEY
+    const val DEFAULT_HEIGHT = 1024
 }

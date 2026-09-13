@@ -1,25 +1,16 @@
 package com.kynex.ai.data.network
 
-import android.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 /**
- * Pollinations image generation via the official OpenAI-compatible endpoint
- * POST {BASE_URL}/v1/images/generations.
- *
- * Request:  { prompt, model, n, size, response_format }
- * Response: { created, data: [{ url | b64_json, media_type, revised_prompt }], usage }
- *
- * Auth (per official spec): Authorization: Bearer <pk_ or sk_ key>.
- * The key is read from ImageGenConfig and NEVER logged.
+ * Pollinations image generation via the keyless legacy endpoint
+ * GET image.pollinations.ai/prompt/{prompt}. The image is returned
+ * directly as bytes.
  */
 class PollinationsImageService {
 
@@ -30,65 +21,18 @@ class PollinationsImageService {
         .build()
 
     /**
-     * Generates an image and returns the decoded image bytes.
-     * Handles both b64_json and url response formats.
+     * Generates an image via the keyless legacy endpoint
+     * GET image.pollinations.ai/prompt/{prompt}. The image is returned
+     * directly as bytes.
      */
     suspend fun generate(prompt: String): Result<ByteArray> = withContext(Dispatchers.IO) {
-        try {
-            val body = JSONObject()
-                .put("prompt", prompt)
-                .put("model", ImageGenConfig.DEFAULT_MODEL)
-                .put("n", 1)
-                .put("size", ImageGenConfig.DEFAULT_SIZE)
-                .put("response_format", ImageGenConfig.RESPONSE_FORMAT)
-                .toString()
-
-            val request = Request.Builder()
-                .url("${ImageGenConfig.BASE_URL}/v1/images/generations")
-                .header("Authorization", "Bearer ${ImageGenConfig.appKey}")
-                .post(body.toRequestBody("application/json".toMediaType()))
-                .build()
-
-            client.newCall(request).execute().use { response ->
-                val text = response.body?.string().orEmpty()
-                if (!response.isSuccessful) {
-                    return@withContext Result.failure(mapHttpError(response.code, text))
-                }
-                parseImage(text)
-            }
-        } catch (e: Exception) {
-            Result.failure(friendly(e))
-        }
-    }
-
-    private fun parseImage(text: String): Result<ByteArray> {
-        val json = try {
-            JSONObject(text)
-        } catch (e: Exception) {
-            return Result.failure(ImageGenException("The server returned an invalid response. Please try again."))
-        }
-        val data = json.optJSONArray("data")
-            ?: return Result.failure(ImageGenException("Empty response from the image service. Please try again."))
-        val first = data.optJSONObject(0)
-            ?: return Result.failure(ImageGenException("No image was returned. Please try again."))
-
-        // b64_json path (documented default)
-        val b64 = first.optString("b64_json", "")
-        if (b64.isNotBlank()) {
-            return try {
-                Result.success(Base64.decode(b64, Base64.DEFAULT))
-            } catch (e: Exception) {
-                Result.failure(ImageGenException("The returned image data could not be decoded."))
-            }
-        }
-
-        // url path fallback
-        val url = first.optString("url", "")
-        if (url.isNotBlank()) {
-            return downloadImage(url)
-        }
-
-        return Result.failure(ImageGenException("The response contained no image. Please try again."))
+        val encoded = java.net.URLEncoder.encode(prompt, "UTF-8")
+        val url = "${ImageGenConfig.BASE_URL}/prompt/$encoded" +
+            "?width=${ImageGenConfig.DEFAULT_WIDTH}" +
+            "&height=${ImageGenConfig.DEFAULT_HEIGHT}" +
+            "&model=${ImageGenConfig.DEFAULT_MODEL}" +
+            "&nologo=true"
+        downloadImage(url)
     }
 
     private fun downloadImage(url: String): Result<ByteArray> = try {

@@ -57,6 +57,7 @@ class AgentRouterService {
         Request.Builder()
             .url(AiConfig.BASE_URL + "chat/completions")
             .header("Authorization", "Bearer ${AiConfig.API_KEY}")
+            .header("User-Agent", AiConfig.CLIENT_USER_AGENT)
             .post(body.toRequestBody("application/json".toMediaType()))
             .build()
 

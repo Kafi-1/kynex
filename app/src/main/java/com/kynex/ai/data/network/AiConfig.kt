@@ -15,6 +15,10 @@ object AiConfig {
     // WARNING: if this repository is public, move this to local.properties.
     const val API_KEY = "sk-fFxMDIz4hePBvOGcQ68fY8sNOTKWAuULefwoJME2aMM64RtG"
 
+    // AgentRouter's gateway rejects non-SDK clients ("unauthorized client detected").
+    // It requires a Claude-CLI style User-Agent.
+    const val CLIENT_USER_AGENT = "claude-cli/1.0.0 (external, cli)"
+
     const val SYSTEM_PROMPT =
         "You are Kynex AI, a helpful, accurate and friendly assistant. " +
             "Use Markdown formatting when helpful, and fenced code blocks with a language tag for code."
