@@ -169,26 +169,32 @@ class ChatViewModel(private val graph: AppGraph) : ViewModel() {
         val repository = repo ?: return
 
         viewModelScope.launch {
-            var chatId = state.currentChatId
-            if (chatId == null) {
-                val title = text.take(40)
-                val chat = repository.createChat(title, model.id)
-                chatId = chat.id
-                state = state.copy(currentChatId = chatId, title = title)
-            }
+            try {
+                var chatId = state.currentChatId
+                if (chatId == null) {
+                    val title = text.take(40)
+                    val chat = repository.createChat(title, model.id)
+                    chatId = chat.id
+                    state = state.copy(currentChatId = chatId, title = title)
+                }
 
-            val userMsg = ChatMessage(
-                id = UUID.randomUUID().toString(),
-                role = Role.USER,
-                content = text,
-                createdAt = System.currentTimeMillis()
-            )
-            state = state.copy(
-                pending = state.pending + userMsg,
-                input = ""
-            )
-            repository.appendMessage(chatId, userMsg)
-            runStream(chatId, model)
+                val userMsg = ChatMessage(
+                    id = UUID.randomUUID().toString(),
+                    role = Role.USER,
+                    content = text,
+                    createdAt = System.currentTimeMillis()
+                )
+                state = state.copy(
+                    pending = state.pending + userMsg,
+                    input = ""
+                )
+                repository.appendMessage(chatId, userMsg)
+                runStream(chatId, model)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                state = state.copy(isStreaming = false, error = friendlyError(e))
+            }
         }
     }
 
@@ -278,13 +284,15 @@ class ChatViewModel(private val graph: AppGraph) : ViewModel() {
             createdAt = System.currentTimeMillis(),
             isError = false
         )
-        repository.appendMessage(chatId, msg)
-        repository.touchChat(
-            chatId = chatId,
-            modelId = model.id,
-            lastMessage = text,
-            countDelta = 2
-        )
+        runCatching {
+            repository.appendMessage(chatId, msg)
+            repository.touchChat(
+                chatId = chatId,
+                modelId = model.id,
+                lastMessage = text,
+                countDelta = 2
+            )
+        }
         state = state.copy(isStreaming = false, streamingText = "")
     }
 

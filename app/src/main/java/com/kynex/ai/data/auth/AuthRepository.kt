@@ -24,7 +24,8 @@ import kotlinx.coroutines.tasks.await
  * TODO(owner): paste your Web Client ID from Firebase Console → Authentication → Sign-in method → Google.
  */
 object AuthConfig {
-    const val GOOGLE_WEB_CLIENT_ID = "PASTE_YOUR_GOOGLE_WEB_CLIENT_ID_HERE"
+    const val GOOGLE_WEB_CLIENT_ID =
+        "121274973056-99rfhhhisue1k1v2l1i94956sksa6aas.apps.googleusercontent.com"
 }
 
 class AuthRepository(private val context: Context) {
