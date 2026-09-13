@@ -26,4 +26,13 @@ object AppGraph {
     }
 
     fun chatRepository(uid: String): ChatRepository = ChatRepository(uid)
+
+    fun readCrashLog(): String? = runCatching {
+        val f = java.io.File(appContext.filesDir, "crash_log.txt")
+        if (f.exists()) f.readText() else null
+    }.getOrNull()
+
+    fun clearCrashLog() {
+        runCatching { java.io.File(appContext.filesDir, "crash_log.txt").delete() }
+    }
 }

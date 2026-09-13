@@ -10,8 +10,8 @@ object ImageGenConfig {
 
     const val BASE_URL = "https://image.pollinations.ai"
 
-    // Free tier model on the legacy endpoint.
-    const val DEFAULT_MODEL = "flux"
+    // gptimage follows prompts much better than the free flux model.
+    const val DEFAULT_MODEL = "gptimage"
 
     const val DEFAULT_WIDTH = 1024
 

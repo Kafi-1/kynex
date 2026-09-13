@@ -176,6 +176,7 @@ class ChatViewModel(private val graph: AppGraph) : ViewModel() {
                     val chat = repository.createChat(title, model.id)
                     chatId = chat.id
                     state = state.copy(currentChatId = chatId, title = title)
+                    observeMessages(chatId)
                 }
 
                 val userMsg = ChatMessage(

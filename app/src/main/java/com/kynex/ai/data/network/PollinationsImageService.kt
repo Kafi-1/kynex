@@ -27,11 +27,13 @@ class PollinationsImageService {
      */
     suspend fun generate(prompt: String): Result<ByteArray> = withContext(Dispatchers.IO) {
         val encoded = java.net.URLEncoder.encode(prompt, "UTF-8")
+        // Random seed so the same prompt never returns the same cached image.
+        val seed = (0..1_000_000).random()
         val url = "${ImageGenConfig.BASE_URL}/prompt/$encoded" +
             "?width=${ImageGenConfig.DEFAULT_WIDTH}" +
             "&height=${ImageGenConfig.DEFAULT_HEIGHT}" +
             "&model=${ImageGenConfig.DEFAULT_MODEL}" +
-            "&nologo=true"
+            "&enhance=true&nologo=true&seed=$seed"
         downloadImage(url)
     }
 
