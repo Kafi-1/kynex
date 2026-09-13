@@ -8,7 +8,7 @@ import com.kynex.ai.domain.model.AiModel
  */
 object AiConfig {
 
-    const val BASE_URL = "https://agentrouter.org/v1/"
+    const val BASE_URL = "https://ps.air-outer.com/v1/"
 
     // AgentRouter API key. Owner understands keys embedded in an APK
     // cannot be considered fully secret (personal-use app).
@@ -31,6 +31,7 @@ object AiConfig {
      */
     val MODELS: List<AiModel> = listOf(
         AiModel(id = "gpt-5.6-sol", displayName = "GPT-5.6-Sol", provider = "OpenAI"),
+        AiModel(id = "gpt-6-astra", displayName = "GPT-6-Astra", provider = "OpenAI"),
         AiModel(id = "claude-opus-4.8", displayName = "Claude Opus 4.8", provider = "Anthropic"),
         AiModel(id = "claude-opus-5", displayName = "Claude Opus 5", provider = "Anthropic"),
         AiModel(id = "deepseek-v4-flash", displayName = "DeepSeek V4 Flash", provider = "DeepSeek"),
