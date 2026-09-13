@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "121274973056",
+    "project_id": "kyenx-1",
+    "storage_bucket": "kyenx-1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:121274973056:android:c50aebff209f329cd91f65",
+        "android_client_info": {
+          "package_name": "com.kynex.ai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "121274973056-99rfhhhisue1k1v2l1i94956sksa6aas.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAhZ-G_BKxaVfwZz_TVA13fm-SHlbtVOc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "121274973056-99rfhhhisue1k1v2l1i94956sksa6aas.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
