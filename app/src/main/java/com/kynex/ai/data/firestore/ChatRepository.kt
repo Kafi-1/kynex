@@ -67,16 +67,16 @@ class ChatRepository(private val uid: String) {
 
     suspend fun renameChat(chatId: String, newTitle: String) {
         chats.document(chatId)
-            .update("title" to newTitle, "updatedAt" to System.currentTimeMillis())
+            .update(mapOf("title" to newTitle, "updatedAt" to System.currentTimeMillis()))
             .await()
     }
 
     suspend fun setSaved(chatId: String, saved: Boolean) {
-        chats.document(chatId).update("isSaved" to saved).await()
+        chats.document(chatId).update(mapOf("isSaved" to saved)).await()
     }
 
     suspend fun updateChatModel(chatId: String, modelId: String) {
-        chats.document(chatId).update("modelId" to modelId).await()
+        chats.document(chatId).update(mapOf("modelId" to modelId)).await()
     }
 
     suspend fun deleteChat(chatId: String) {
@@ -92,7 +92,7 @@ class ChatRepository(private val uid: String) {
     fun observeMessages(chatId: String, limit: Long = 60): Flow<List<ChatMessage>> = callbackFlow {
         val reg = chats.document(chatId).collection("messages")
             .orderBy("createdAt", Query.Direction.ASCENDING)
-            .limitToLast(limit.toInt())
+            .limitToLast(limit)
             .addSnapshotListener { snap, e ->
                 if (e != null) {
                     close(e)
@@ -152,7 +152,7 @@ class ChatRepository(private val uid: String) {
     }
 
     suspend fun updateDisplayName(name: String) {
-        userDoc.update("name" to name, "updatedAt" to System.currentTimeMillis()).await()
+        userDoc.update(mapOf("name" to name, "updatedAt" to System.currentTimeMillis())).await()
     }
 
     suspend fun saveSettings(selectedModel: String, theme: String) {

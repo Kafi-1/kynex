@@ -39,5 +39,5 @@ data class UserProfile(
 )
 
 object ModelRegistry {
-    fun byId(id: String): AiModel? = ALL_MODELS.firstOrNull { it.id == id }
+    fun byId(id: String): AiModel? = com.kynex.ai.data.network.AiConfig.MODELS.firstOrNull { it.id == id }
 }

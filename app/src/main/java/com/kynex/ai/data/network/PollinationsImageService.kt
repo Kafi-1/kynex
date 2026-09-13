@@ -97,7 +97,7 @@ class PollinationsImageService {
                 Result.failure(mapHttpError(response.code, ""))
             } else {
                 val bytes = response.body?.bytes()
-                if (bytes.isNullOrEmpty()) {
+                if (bytes == null || bytes.isEmpty()) {
                     Result.failure(ImageGenException("The image could not be downloaded. Please try again."))
                 } else {
                     Result.success(bytes)

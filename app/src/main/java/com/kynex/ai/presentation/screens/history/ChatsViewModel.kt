@@ -20,7 +20,7 @@ data class ChatsUiState(
 }
 
 /** Shared by the History and Saved screens. */
-class ChatsViewModel(
+open class ChatsViewModel(
     private val graph: AppGraph,
     private val savedOnly: Boolean = false
 ) : ViewModel() {
